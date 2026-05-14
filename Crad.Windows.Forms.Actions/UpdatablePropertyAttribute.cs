@@ -1,8 +1,7 @@
 using System;
 
-namespace Crad.Windows.Forms.Actions
+namespace Crad.Windows.Forms.Actions;
+
+public class UpdatablePropertyAttribute: Attribute
 {
-    public class UpdatablePropertyAttribute: Attribute
-    {
-    }
 }

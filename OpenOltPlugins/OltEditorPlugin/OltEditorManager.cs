@@ -15,7 +15,12 @@ namespace OltEditorPlugin
             onlineManager = appHost.GetOnlineManager();
             oltEditorPanel = new OltEditorPanel();
             oltEditorPanel.Init(onlineManager);
-            appHost.AddContent(oltEditorPanel, "Изменение калибровок online", null, Keys.None);
+            
+            appHost.AddContent(
+                oltEditorPanel,
+                "Изменение калибровок online",
+                null,
+                Keys.None);
         }
     }
 }

@@ -7,16 +7,18 @@ using CtpMaps.DataTypes;
 using Helper.ProgressDialog;
 using OpenOltTypes;
 
-namespace RamTablePlugin
-{
-    internal class CaptureManager
+namespace RamTablePlugin;
+
+internal class CaptureManager
     {
-        internal const int captureAddress = 0xFE00;
+        internal const int CaptureAddress = 0xFE00;
+        
         internal readonly IOnlineManager onlineManager;
         internal readonly TableValues<byte, float> table;
-        private byte[] rawBuffer;
+        
+        private byte[] _rawBuffer;
         internal ExInfo exInfo;
-        private IWin32Window owner;
+        private IWin32Window _owner;
 
         public CaptureManager(IOnlineManager onlineManager)
         {
@@ -45,12 +47,10 @@ namespace RamTablePlugin
         private void TableOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != "Table") return;
-            using (var progress = ProgressForm.ShowProgress(owner))
-            {
-                onlineManager.FirmwareManager.WriteRam(captureAddress, table.Address, table.GetRawBuffer(),
-                                                       progress, true);
-                progress.Close();
-            }
+            using var progress = ProgressForm.ShowProgress(_owner);
+            onlineManager.FirmwareManager.WriteRam(CaptureAddress, table.Address, table.GetRawBuffer(),
+                progress, true);
+            progress.Close();
         }
 
         private void FirmwareManagerOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -88,52 +88,33 @@ namespace RamTablePlugin
                     if (exInfo.RtType != RtType.RpmPress) return;
                     table.CurrentIndex = onlineManager.FirmwareManager.RpmPressRtIndex;
                     break;
-                
             }
         }
 
         internal void SetCurrentIndex()
         {
             if (CapturedTable == null) return;
-            switch (exInfo.RtType)
+            table.CurrentIndex = exInfo.RtType switch
             {
-                case RtType.Twat:
-                    table.CurrentIndex = onlineManager.FirmwareManager.TwatRtIndex;
-                    break;
-
-                case RtType.RpmThr:
-                    table.CurrentIndex = onlineManager.FirmwareManager.RpmThrRtIndex;
-                    break;
-
-                case RtType.Rpm32Thr:
-                    table.CurrentIndex = onlineManager.FirmwareManager.Rpm32ThrRtIndex;
-                    break;
-
-                case RtType.Rpm32:
-                    table.CurrentIndex = onlineManager.FirmwareManager.RpmRt32Index;
-                    break;
-
-                case RtType.RpmGbc:
-                    table.CurrentIndex = onlineManager.FirmwareManager.RpmGbcRtIndex;
-                    break;
-
-                case RtType.RpmPress:
-                    table.CurrentIndex = onlineManager.FirmwareManager.RpmPressRtIndex;
-                    break;
-            }
+                RtType.Twat => onlineManager.FirmwareManager.TwatRtIndex,
+                RtType.RpmThr => onlineManager.FirmwareManager.RpmThrRtIndex,
+                RtType.Rpm32Thr => onlineManager.FirmwareManager.Rpm32ThrRtIndex,
+                RtType.Rpm32 => onlineManager.FirmwareManager.RpmRt32Index,
+                RtType.RpmGbc => onlineManager.FirmwareManager.RpmGbcRtIndex,
+                RtType.RpmPress => onlineManager.FirmwareManager.RpmPressRtIndex,
+                _ => table.CurrentIndex
+            };
         }
 
         private void TableOnValueChanged(object sender, ValueChangeArgs e)
         {
-            var ramAddress = captureAddress + e.Index;
+            var ramAddress = CaptureAddress + e.Index;
             var bufferAddress = table.CalcAddress(e.Index);
             onlineManager.FirmwareManager.WriteRam(ramAddress, bufferAddress, table[e.Index], true);
         }
 
-        private void FirmwareManagerOnOpenFirmware(object sender, EventArgs e)
-        {
+        private void FirmwareManagerOnOpenFirmware(object sender, EventArgs e) => 
             SetEnabled();
-        }
 
         private void SetEnabled()
         {
@@ -144,11 +125,8 @@ namespace RamTablePlugin
             DoEnabledChange(EventArgs.Empty);
         }
 
-        private void DoEnabledChange(EventArgs e)
-        {
-            if (OnEnabledChange == null) return;
-            OnEnabledChange(this, e);
-        }
+        private void DoEnabledChange(EventArgs e) 
+            => OnEnabledChange?.Invoke(this, e);
 
         public TableValues<byte, float> CapturedTable { get; private set; }
 
@@ -159,8 +137,8 @@ namespace RamTablePlugin
 
         public void CaptureTable(MapEntry entry, IWin32Window owner)
         {
-            var FirmwareManager = onlineManager.FirmwareManager;
-            this.owner = owner;            
+            var firmwareManager = onlineManager.FirmwareManager;
+            _owner = owner;            
 
             switch ((MapEntryType)entry.Type)
             {
@@ -168,9 +146,11 @@ namespace RamTablePlugin
                     var entry2D = entry.Entry2D;
                     exInfo = entry2D.Convert.ExInfo;
                     table.Address = (int) entry2D.Addr;
-                    table.AxisX = FirmwareManager.GetAxis(entry2D);
+                    table.AxisX = firmwareManager.GetAxis(entry2D);
                     table.AxisY = null;
+                    
                     var converter = Source2Value(entry2D);
+                    
                     FillMinMax(table, entry2D.Const_type);
 
                     table.Units = entry2D.Units;
@@ -180,7 +160,7 @@ namespace RamTablePlugin
                     table.xUnits = entry2D.xUnits;
 
                     table.Init(entry2D.xPoints, 1, converter,
-                               Value2Source(entry2D.Convert, table.RawMin, table.RawMax), FirmwareManager.Buffer);                    
+                               Value2Source(entry2D.Convert, table.RawMin, table.RawMax), firmwareManager.Buffer);                    
                     table.FirstInit();                    
                     table.FillValues();
                     
@@ -191,12 +171,12 @@ namespace RamTablePlugin
                     var entry3D = entry.Entry3D;
                     exInfo = entry3D.Convert.ExInfo;
                     table.Address = (int)entry3D.Addr;
-                    table.AxisX = FirmwareManager.GetAxisX(entry3D);
-                    table.AxisY = FirmwareManager.GetAxisY(entry3D);
+                    table.AxisX = firmwareManager.GetAxisX(entry3D);
+                    table.AxisY = firmwareManager.GetAxisY(entry3D);
                     var converter3D = Source2Value(entry3D);
                     FillMinMax(table, entry3D.Const_type);
                     table.Init(entry3D.xPoints, entry3D.zPoints, converter3D,
-                               Value2Source(entry3D.Convert, table.RawMin, table.RawMax), FirmwareManager.Buffer);                    
+                               Value2Source(entry3D.Convert, table.RawMin, table.RawMax), firmwareManager.Buffer);                    
                     table.FirstInit();                    
                     table.FillValues();
                     OpenOltHelper.FillMinMax(table, entry3D);
@@ -209,18 +189,19 @@ namespace RamTablePlugin
             table.Name = entry.Name;
             table.Tag = entry;            
             CapturedTable = table;
-            rawBuffer = table.GetRawBuffer();
+            _rawBuffer = table.GetRawBuffer();
             using (var progress = ProgressForm.ShowProgress(owner))
             {
                 onlineManager.OltProtocol.StopCapture();
-                onlineManager.OltProtocol.WriteRam(captureAddress, rawBuffer, progress);
+                onlineManager.OltProtocol.WriteRam(CaptureAddress, _rawBuffer, progress);
                 onlineManager.OltProtocol.StartCapture(exInfo.CaptureRamId);
                 progress.Close();
             }
 
-            onlineManager.EnabledRamOnlineCorrection = CapturedTable.Address == FirmwareHelper.GbcAddr ||
-                                                       CapturedTable.Address == FirmwareHelper.KGbcAddr || 
-                                                       CapturedTable.Address == FirmwareHelper.KGbcJ7esDadAddr;
+            onlineManager.EnabledRamOnlineCorrection = CapturedTable.Address 
+                is FirmwareHelper.GbcAddr 
+                or FirmwareHelper.KGbcAddr 
+                or FirmwareHelper.KGbcJ7esDadAddr;
 
             DoCaptureTable(EventArgs.Empty);                       
         }
@@ -231,31 +212,30 @@ namespace RamTablePlugin
             DoCaptureTable(EventArgs.Empty);
         }
 
-        private void DoCaptureTable(EventArgs e)
-        {
-            if (OnCaptureTable == null) return;
-            OnCaptureTable(this, e);
-        }
+        private void DoCaptureTable(EventArgs e) 
+            => OnCaptureTable?.Invoke(this, e);
 
         private static Func<byte, float> Source2Value(EntryBase entry)
         {
             var convertInfo = entry.Convert;
-            
-            switch (entry.Const_type)
+
+            return entry.Const_type switch
             {
-                case 0:                    
-                    return source => (float) Math.Round((convertInfo.Inverted == 0.0
-                                                             ? (source - convertInfo.Offset1)*convertInfo.Step/convertInfo.Div_step -
-                                                               convertInfo.Offset2
-                                                             : convertInfo.Inverted/(source*convertInfo.Div_step)), 2, MidpointRounding.AwayFromZero);
-                case 1:                    
-                    return source => (float)Math.Round((convertInfo.Inverted == 0.0
-                                                            ? ((sbyte)source - convertInfo.Offset1) * convertInfo.Step / convertInfo.Div_step -
-                                                              convertInfo.Offset2
-                                                            : convertInfo.Inverted / ((sbyte)source * convertInfo.Div_step)), 2, MidpointRounding.AwayFromZero);
-                default:
-                    throw new NotSupportedException();
-            }
+                0 => source =>
+                    (float)Math.Round(
+                        (convertInfo.Inverted == 0.0
+                            ? (source - convertInfo.Offset1) * convertInfo.Step / convertInfo.Div_step -
+                              convertInfo.Offset2
+                            : convertInfo.Inverted / (source * convertInfo.Div_step)), 2,
+                        MidpointRounding.AwayFromZero),
+                1 => source => (float)Math.Round(
+                    (convertInfo.Inverted == 0.0
+                        ? ((sbyte)source - convertInfo.Offset1) * convertInfo.Step / convertInfo.Div_step -
+                          convertInfo.Offset2
+                        : convertInfo.Inverted / ((sbyte)source * convertInfo.Div_step)), 2,
+                    MidpointRounding.AwayFromZero),
+                _ => throw new NotSupportedException()
+            };
         }
 
         private static Func<float, byte> Value2Source(ConvertInfo convertInfo, int min, int max)
@@ -290,17 +270,16 @@ namespace RamTablePlugin
 
         public void RestoreTable(IWin32Window owner)
         {
-            if (CapturedTable == null) return;                        
-            CapturedTable.SetRawBuffer(rawBuffer);
+            if (CapturedTable == null) return;
+            
+            CapturedTable.SetRawBuffer(_rawBuffer);
             CapturedTable.FirstInit();
             CapturedTable.FillValues();
 
-            using (var progress = ProgressForm.ShowProgress(owner))
-            {
-                onlineManager.FirmwareManager.WriteRam(captureAddress, table.Address, rawBuffer);
-                onlineManager.OltProtocol.StartCapture(exInfo.CaptureRamId);
-                progress.Close();
-            } 
+            using var progress = ProgressForm.ShowProgress(owner);
+            
+            onlineManager.FirmwareManager.WriteRam(CaptureAddress, table.Address, _rawBuffer);
+            onlineManager.OltProtocol.StartCapture(exInfo.CaptureRamId);
+            progress.Close();
         }
     }
-}

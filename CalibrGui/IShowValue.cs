@@ -1,7 +1,7 @@
-namespace CalibrGui
+namespace CalibrGui;
+
+public interface IShowValue
 {
-    public interface IShowValue
-    {
-        void SetValue(ICalibrItem baseItem);
-    }
+    void SetValue(ICalibrItem baseItem);
 }
+

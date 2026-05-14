@@ -1,9 +1,8 @@
 using System;
 
-namespace Crad.Windows.Forms.Actions
+namespace Crad.Windows.Forms.Actions;
+
+[AttributeUsage(AttributeTargets.Class)]
+public class StandardActionAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple=false)]
-    public class StandardActionAttribute: Attribute
-    {
-    }
 }

@@ -1,15 +1,15 @@
 ﻿using System.ComponentModel;
 
-namespace CalibrGui
+namespace CalibrGui;
+
+public interface ICalibrItem : INotifyPropertyChanged
 {
-    public interface ICalibrItem : INotifyPropertyChanged
-    {
-        string Name { get; }
-        string ValueStr { get; }
-        string Description { get; }
-        float Value { get; }
-        string Unit { get; }
-        float MinValue { get; }
-        float MaxValue { get; }
-    }
+    string Name { get; }
+    string ValueStr { get; }
+    string Description { get; }
+    float Value { get; }
+    string Unit { get; }
+    float MinValue { get; }
+    float MaxValue { get; }
 }
+

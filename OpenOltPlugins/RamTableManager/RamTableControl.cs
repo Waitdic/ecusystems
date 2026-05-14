@@ -27,7 +27,7 @@ namespace RamTablePlugin
             captureManager.onlineManager.OltProtocol.OnConnect += OltProtocolOnConnect;
             captureManager.onlineManager.OltProtocol.OnDisconnect += OltProtocolOnConnect;
             ramTablesBS.DataSource =
-                maps.Entries.Where(
+                maps.entries.Where(
                     item =>
                     (item.Entry2D != null && item.Entry2D.Convert.ExInfo.CaptureRamId != 0) ||
                     (item.Entry3D != null && item.Entry3D.Convert.ExInfo.CaptureRamId != 0));

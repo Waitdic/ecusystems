@@ -28,18 +28,18 @@ namespace CtpMapEditor
         private void LoadMap(string path)
         {
             ctpMap.LoadFromFile(path);
-            bindingSource1.DataSource = ctpMap.Entries;
+            bindingSource1.DataSource = ctpMap.entries;
             bindingSource1.ResetBindings(false);
 
             bindingSource2.DataSource =
-                ctpMap.Entries.Where(
+                ctpMap.entries.Where(
                     entry =>
                     (entry.Entry2D != null && entry.Entry2D.Convert.ExInfo.CaptureRamId != 0) ||
                     (entry.Entry3D != null && entry.Entry3D.Convert.ExInfo.CaptureRamId != 0));
             bindingSource2.ResetBindings(false);
 
             bindingSource3.DataSource =
-               ctpMap.Entries.Where(
+               ctpMap.entries.Where(
                    entry =>
                    //(entry.Entry1D != null && entry.Entry1D.Const_type > 1) ||
                    (entry.Entry2D != null && entry.Entry2D.Const_type > 1) ||
@@ -95,11 +95,11 @@ namespace CtpMapEditor
 
         private void btnIda_Click(object sender, EventArgs e)
         {
-            if (ctpMap.Entries.Count == 0) return;
+            if (ctpMap.entries.Count == 0) return;
 
             var strBuilder = new StringBuilder();
 
-            foreach (var entry in ctpMap.Entries)
+            foreach (var entry in ctpMap.entries)
             {
                 if (entry.Type == 0) continue;
 
@@ -162,7 +162,7 @@ namespace CtpMapEditor
 
             foreach (var entry in node.Nodes.OfType<TreeNode>().Select(item => item.Tag as MapEntry))
             {
-                var destEntry = ctpMap.Entries.FirstOrDefault(item => item.Comp_id != 0 && item.Comp_id == entry.Comp_id);
+                var destEntry = ctpMap.entries.FirstOrDefault(item => item.Comp_id != 0 && item.Comp_id == entry.Comp_id);
                 if (destEntry == null) continue;
             }
         }

@@ -5,7 +5,7 @@ namespace CtpMaps
 {
     public static class FirmwareHelper
     {
-        public const int RmpSamplingAddr = 0x613C;
+        private const int RmpSamplingAddr = 0x613C;
         public const int ThrSamplingAddr = 0x7208;
         public const int MinGbcAddr = 0x6064;
         public const int StepGbcAddr = 0x6066;
@@ -18,7 +18,7 @@ namespace CtpMaps
 
         public static void FillRpmRT(byte[] buffer, out byte[] rpmSampling, out int[] rpmRt32, out int[] rpmRt16)
         {            
-            var isFastRpm = DataHelper.IndexOf(buffer, new byte[] {0x90, 0x61, 0x3C, 0xE5, 0x55}) != -1;
+            var isFastRpm = DataHelper.IndexOf(buffer, [0x90, 0x61, 0x3C, 0xE5, 0x55]) != -1;
             rpmSampling = new byte[256];
             rpmRt32 = new int[32];
             rpmRt16 = new int[16];

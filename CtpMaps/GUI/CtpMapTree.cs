@@ -43,7 +43,7 @@ namespace CtpMaps.GUI
             var level = 1;
             levels.Add(level, node);
 
-            foreach (var entry in map.Entries)
+            foreach (var entry in map.entries)
             {
                 
                 if (entry.Level > level)

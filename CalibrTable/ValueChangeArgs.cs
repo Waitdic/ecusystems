@@ -1,9 +1,8 @@
 using System;
 
-namespace CalibrTable
+namespace CalibrTable;
+
+public class ValueChangeArgs : EventArgs
 {
-    public class ValueChangeArgs : EventArgs
-    {
-        public int Index;
-    }
+    public int Index;
 }

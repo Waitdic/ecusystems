@@ -35,7 +35,7 @@ namespace OltSn
 
             try
             {
-                string serialNumber = String.Empty; 
+                var serialNumber = string.Empty; 
                 //serialNumber = CalcSerialNumber(StrToBytes("80F11011635DB43C59AB2AB633B1C07005C70E22A7DD"));
                 //serialNumber = BytesToStr(CalcEcuSn(StrToBytes("5DB43C59AB2AB633B1C07005C70E22A7")));
 
