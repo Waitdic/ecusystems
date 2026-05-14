@@ -1,5 +1,4 @@
-﻿using System;
-using SokolovSport.Dat;
+﻿using SokolovSport.Dat;
 
 namespace SokolovSport.EcuComm
 {

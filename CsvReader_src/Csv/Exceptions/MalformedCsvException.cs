@@ -1,5 +1,5 @@
 //	LumenWorks.Framework.IO.Csv.MalformedCsvException
-//	Copyright (c) 2005 Sébastien Lorion
+//	Copyright (c) 2005 Sï¿½bastien Lorion
 //
 //	MIT license (http://en.wikipedia.org/wiki/MIT_License)
 //
@@ -22,8 +22,6 @@
 using System;
 using System.Globalization;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
-
 using LumenWorks.Framework.IO.Csv.Resources;
 
 namespace LumenWorks.Framework.IO.Csv

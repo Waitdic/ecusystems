@@ -8,11 +8,6 @@
 // 
 #endregion
 
-using System;
-using System.Collections;
-using System.Globalization;
-using Nini.Util;
-
 namespace Nini.Config
 {
 	/// <include file='IniConfig.xml' path='//Class[@name="IniConfig"]/docs/*' />

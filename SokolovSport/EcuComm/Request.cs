@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Helper;
-using SokolovSport.Dat;
+﻿using Helper;
 
 namespace SokolovSport.EcuComm
 {

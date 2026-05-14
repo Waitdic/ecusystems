@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EcuCommunication.Protocols
+﻿namespace EcuCommunication.Protocols
 {
     internal interface IDiagDataRequest
     {

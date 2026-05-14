@@ -1,5 +1,5 @@
 //	LumenWorks.Framework.IO.CSV.CachedCsvReader.CsvPropertyDescriptor
-//	Copyright (c) 2006 Sébastien Lorion
+//	Copyright (c) 2006 Sï¿½bastien Lorion
 //
 //	MIT license (http://en.wikipedia.org/wiki/MIT_License)
 //
@@ -20,7 +20,6 @@
 //	ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace LumenWorks.Framework.IO.Csv

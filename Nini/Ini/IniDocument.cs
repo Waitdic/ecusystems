@@ -11,7 +11,6 @@
 using System;
 using System.IO;
 using System.Collections;
-using Nini.Util;
 
 namespace Nini.Ini
 {

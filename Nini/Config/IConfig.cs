@@ -8,8 +8,6 @@
 // 
 #endregion
 
-using System;
-
 namespace Nini.Config
 {
 	/// <include file='IConfig.xml' path='//Interface[@name="IConfig"]/docs/*' />

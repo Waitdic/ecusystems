@@ -12,7 +12,6 @@ using System;
 using System.Reflection;
 using System.Security.Permissions;
 using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
 
 #if (NET_1_0)
 [assembly: AssemblyTitle("Nini for .NET Framework 1.0")]

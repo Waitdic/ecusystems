@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -8,7 +6,7 @@ namespace Helper
     public class Palette
     {
         /// <summary>
-        /// Отсортированный список пар: значение-цвет
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅ
         /// </summary>
         protected readonly SortedList<float, int> pairs = new SortedList<float, int>();
 
@@ -18,7 +16,7 @@ namespace Helper
        
         //--------------------------------------
         /// <summary>
-        /// Очистить список палитры
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
         public void Clear()
         {
@@ -26,17 +24,17 @@ namespace Helper
         }
 
         /// <summary>
-        /// Удалить элемент палитры из списка
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
-        /// <param name="value">значение элемента палитры</param>
+        /// <param name="value">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
         public void RemoveElement(float value)
         {
             pairs.Remove(value);
         }
         /// <summary>
-        /// Удалить элемент палитры по индексу
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
-        /// <param name="index">значение элемента палитры</param>
+        /// <param name="index">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
         public void RemoveElement(int index)
         {
             if ((index < 0) && (index >= pairs.Count)) return;
@@ -45,10 +43,10 @@ namespace Helper
         }
 
         /// <summary>
-        /// Добавить  элемент палитры в список
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ  пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
-        /// <param name="value">значение элемента палитры</param>
-        /// <param name="color">цвет элемента палитры</param>
+        /// <param name="value">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
+        /// <param name="color">пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
         public void AddElement(float value, int color)
         {
             pairs.Add(value, color);       
@@ -56,19 +54,19 @@ namespace Helper
 
         //--------------------------------------
         /// <summary>
-        /// Получить цвет по индексу
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
-        /// <param name="index">индекс</param>
+        /// <param name="index">пїЅпїЅпїЅпїЅпїЅпїЅ</param>
         internal int GetColor(int index)
         {
             return pairs.Values[index];
         }
 
         /// <summary>
-        /// Установить цвет по индексу
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
-        /// <param name="index">индекс</param>
-        /// <param name="color">цвет</param>
+        /// <param name="index">пїЅпїЅпїЅпїЅпїЅпїЅ</param>
+        /// <param name="color">пїЅпїЅпїЅпїЅ</param>
         internal void SetColor(int index, int color)
         {
             var value = pairs.Keys[index];
@@ -77,19 +75,19 @@ namespace Helper
 
         //--------------------------------------
         /// <summary>
-        /// Получить значение по индексу
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
-        /// <param name="index">индекс</param>
+        /// <param name="index">пїЅпїЅпїЅпїЅпїЅпїЅ</param>
         public float GetValue(int index)
         {
             return pairs.Keys[index];           
         }
 
         /// <summary>
-        /// Установить значение по индексу
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
-        /// <param name="index">индекс</param>
-        /// <param name="value">значение</param>
+        /// <param name="index">пїЅпїЅпїЅпїЅпїЅпїЅ</param>
+        /// <param name="value">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
         public void SetValue(int index, float value)
         {
             var color = pairs.Values[index];
@@ -105,10 +103,10 @@ namespace Helper
 
 
         /// <summary>
-        /// Получить цвет по значению
+        /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
-        /// <param name="value">значение</param>
-        /// <param name="defaultColor">цвет по умолчанию</param>
+        /// <param name="value">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
+        /// <param name="defaultColor">пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
         public int GetColorOnValue(float value, int defaultColor)
         {
             return InnerGetColorOnValue(value, defaultColor);
@@ -117,23 +115,23 @@ namespace Helper
         internal int InnerGetColorOnValue(float value, int defaultColor)
         {
             var count = pairs.Count;
-            // палитра пустая
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             if (count == 0) return defaultColor;
 
             // --------------------------------------------------------------
-            // ищем индекс значения палитры, меньший значения параметра value
+            // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ value
             // --------------------------------------------------------------            
 
             var keys = pairs.Keys;
             var values = pairs.Values;
             var bottomIndex = FindRange(value);
 
-            // проверяем нижнюю границу
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             if (bottomIndex < 0)
                 return LimitBelow ? defaultColor 
                     : values[0];
 
-            // проверяем верхнюю границу
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             var topIndex = count - 1;
             if (bottomIndex >= topIndex)
                 return LimitAbove ? defaultColor
@@ -143,13 +141,13 @@ namespace Helper
                 return values[bottomIndex];
 
             // --------------------------------
-            // палитра градиентная (MFL)
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (MFL)
             // --------------------------------
             topIndex = bottomIndex + 1;
-            // коэффициент градиента
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             var scale = (value - keys[bottomIndex]) / (keys[topIndex] - keys[bottomIndex]);
 
-            // вычисляем отдельно по цветам            
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ            
             var bottomValue = values[bottomIndex];
             var topValue = values[topIndex];
 

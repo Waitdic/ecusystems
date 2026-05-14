@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading;
-using System.Windows;
 using EcuCommunication;
 using Application = System.Windows.Forms.Application;
 

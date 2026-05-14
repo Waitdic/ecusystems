@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WidebandLambdaCommunication
+﻿namespace WidebandLambdaCommunication
 {
     public enum LambdaState: byte
     {

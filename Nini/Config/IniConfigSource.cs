@@ -10,7 +10,6 @@
 
 using System;
 using System.IO;
-using System.Collections;
 using Nini.Ini;
 
 namespace Nini.Config

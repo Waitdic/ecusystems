@@ -1,10 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Reflection;
 using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace Crad.Windows.Forms.Actions.Design
 {

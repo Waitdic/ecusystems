@@ -9,10 +9,7 @@
 #endregion
 
 using System;
-using System.IO;
-using System.Collections;
 using Microsoft.Win32;
-using Nini.Ini;
 
 namespace Nini.Config
 {

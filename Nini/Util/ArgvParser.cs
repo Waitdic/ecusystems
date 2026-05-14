@@ -10,8 +10,6 @@
 // Article: http://thecodeproject.com/csharp/command_line.asp
 #endregion
 
-using System;
-using System.Collections;
 using System.Collections.Specialized;
 using System.Text.RegularExpressions;
 

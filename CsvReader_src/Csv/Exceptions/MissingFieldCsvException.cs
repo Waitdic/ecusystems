@@ -1,5 +1,5 @@
 //	LumenWorks.Framework.IO.Csv.MissingFieldCsvException
-//	Copyright (c) 2005 Sébastien Lorion
+//	Copyright (c) 2005 Sï¿½bastien Lorion
 //
 //	MIT license (http://en.wikipedia.org/wiki/MIT_License)
 //
@@ -20,11 +20,7 @@
 //	ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Globalization;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
-
-using LumenWorks.Framework.IO.Csv.Resources;
 
 namespace LumenWorks.Framework.IO.Csv
 {
