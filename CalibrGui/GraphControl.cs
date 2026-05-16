@@ -44,10 +44,10 @@ namespace CalibrGui
             valueGraph.PeConfigure.PrepareImages = true;
             valueGraph.PeConfigure.CacheBmp = true;
 
-            valueGraph.PeString.SubTitle = String.Empty;
+            valueGraph.PeString.SubTitle = string.Empty;
             valueGraph.PeString.MainTitle = baseItem.Description;
             valueGraph.PeString.YAxisLabel = String.Format("{0}, {1}", baseItem.Name, baseItem.Unit);
-            valueGraph.PeString.XAxisLabel = String.Empty;
+            valueGraph.PeString.XAxisLabel = string.Empty;
 
             valueGraph.PeGrid.Configure.ManualScaleControlY = ManualScaleControl.MinMax;
             valueGraph.PeGrid.Configure.ManualMinY = baseItem.MinValue;

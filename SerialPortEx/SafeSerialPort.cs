@@ -2,83 +2,85 @@
 using System.IO;
 using System.IO.Ports;
 
-namespace SerialPortEx
+namespace SerialPortEx;
+
+public class SafeSerialPort : SerialPort
 {
+    private Stream _theBaseStream;
 
-    public class SafeSerialPort : SerialPort
+    public SafeSerialPort(
+        string portName,
+        int baudRate,
+        Parity parity,
+        int dataBits,
+        StopBits stopBits)
+        : base(portName, baudRate, parity, dataBits, stopBits)
     {
-        private Stream theBaseStream;
+    }
 
-        public SafeSerialPort(string portName, int baudRate, Parity parity, int dataBits, StopBits stopBits)
-            : base(portName, baudRate, parity, dataBits, stopBits)
+    public new void Open()
+    {
+        try
         {
-
+            base.Open();
+            _theBaseStream = BaseStream;
+            GC.SuppressFinalize(BaseStream);
         }
-
-        public new void Open()
+        catch
         {
-            try
-            {
-                base.Open();
-                theBaseStream = BaseStream;
-                GC.SuppressFinalize(BaseStream);
-            }
-            catch
-            {
-
-            }
+            // ignored
         }
+    }
 
-        public new void Dispose()
+    public new void Dispose()
+    {
+        Dispose(true);
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && Container != null)
         {
-            Dispose(true);
+            Container.Dispose();
         }
-
-        protected override void Dispose(bool disposing)
+        try
         {
-            if (disposing && (base.Container != null))
+            if (_theBaseStream.CanRead)
             {
-                base.Container.Dispose();
+                _theBaseStream.Close();
+                GC.ReRegisterForFinalize(_theBaseStream);
             }
-            try
-            {
-                if (theBaseStream.CanRead)
-                {
-                    theBaseStream.Close();
-                    GC.ReRegisterForFinalize(theBaseStream);
-                }
-            }
-            catch
-            {
-                // ignore exception - bug with USB - serial adapters.
-            }
-            base.Dispose(disposing);
         }
-
-        public new void DiscardInBuffer() {
-            try
-            {
-                base.DiscardInBuffer();               
-            }
-            catch
-            {
-                // ignore exception - bug with USB - serial adapters.
-            }
-
-        }
-
-        public new void DiscardOutBuffer()
+        catch
         {
-            try
-            {
-                base.DiscardOutBuffer();
-            }
-            catch
-            {
-                // ignore exception - bug with USB - serial adapters.
-            }
+            // ignore exception - bug with USB - serial adapters.
+        }
+        
+        base.Dispose(disposing);
+    }
 
+    public new void DiscardInBuffer() 
+    {
+        try
+        {
+            base.DiscardInBuffer();               
+        }
+        catch
+        {
+            // ignore exception - bug with USB - serial adapters.
         }
 
+    }
+
+    public new void DiscardOutBuffer()
+    {
+        try
+        {
+            base.DiscardOutBuffer();
+        }
+        catch
+        {
+            // ignore exception - bug with USB - serial adapters.
+        }
     }
 }

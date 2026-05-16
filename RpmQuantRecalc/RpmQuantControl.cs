@@ -58,7 +58,7 @@ namespace RpmQuantRecalc
 
                 openFileDialog.Title = "Выберите файл прошивки";
                 openFileDialog.Filter = "buffer files|*.bir;*.bin|all files|*.*";
-                openFileDialog.FileName = String.Empty;
+                openFileDialog.FileName = string.Empty;
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK) return;
                 var fileInfo = new FileInfo(openFileDialog.FileName);
 

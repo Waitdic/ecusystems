@@ -5,16 +5,18 @@ using System.IO;
 using System.Text;
 using SokolovSport.EcuComm;
 
-namespace SokolovSport.Dat
-{
-    static class DatHelper
-    {
-        public static bool TestFile(string path)
-        {
-            return File.Exists(path) && (File.GetAttributes(path) & FileAttributes.ReadOnly) != FileAttributes.ReadOnly;
-        }
+namespace SokolovSport.Dat;
 
-        public static float Convert2Value(this CalibrItem calibr, float source)
+static class DatHelper
+{
+    public static bool TestFile(string path)
+    {
+        return File.Exists(path) && (File.GetAttributes(path) & FileAttributes.ReadOnly) != FileAttributes.ReadOnly;
+    }
+
+    extension(CalibrItem calibr)
+    {
+        private float Convert2Value(float source)
         {
             if (calibr.ItemInfo == null || calibr.ItemInfo.Div == 0) return 0;
 
@@ -22,12 +24,12 @@ namespace SokolovSport.Dat
             return value;
         }
 
-        public static float Convert2Value(this CalibrItem calibr, int source)
+        public float Convert2Value(int source)
         {
-            return Convert2Value(calibr, (float)source);
+            return calibr.Convert2Value((float)source);
         }
 
-        public static int Convert2Source(this CalibrItem calibr, float value)
+        public int Convert2Source(float value)
         {
             if (calibr.ItemInfo == null || calibr.ItemInfo.Mul == 0) return 0;
 
@@ -36,7 +38,7 @@ namespace SokolovSport.Dat
             return source;
         }
 
-        public static float CalcValueByIndex(this CalibrItem calibr, int index, int count)
+        public float CalcValueByIndex(int index, int count)
         {
             var step = calibr.ItemInfo.Length / (float)(count - 1);
             var rawValue = index*step;
@@ -44,47 +46,47 @@ namespace SokolovSport.Dat
             return value;
         }
 
-        public static int CalcIndexByValue(this CalibrItem calibr, float value, int count)
+        public int CalcIndexByValue(float value, int count)
         {
             var rawValue = calibr.Convert2Source(value);
             var step = calibr.ItemInfo.Length / (float)(count - 1);
             return (int) Math.Floor((rawValue - calibr.ItemInfo.Min)/step);
-        } 
-       
-        public static Request[] CreateWriteRequest(this CalibrItem calibr, bool fullWrite = false)
+        }
+
+        public Request[] CreateWriteRequest(bool fullWrite = false)
         {
             switch (calibr.ItemInfo.ItemType)
             {
                 case ItemTypes.Table:
                 case ItemTypes.Teach:
+                {
+                    if (fullWrite)
                     {
-                        if (fullWrite)
+                        var count = calibr.Table.Count;
+                        var requests = new List<Request>();
+
+                        for (int i = 0; i < count; i++)
                         {
-                            var count = calibr.Table.Count;
-                            var requests = new List<Request>();
-
-                            for (int i = 0; i < count; i++)
-                            {
-                                requests.AddRange(calibr.CreateRequest(RequestType.Write, calibr.GetTableCellAddress(i),
-                                                                       calibr.Table.Cell(i).Source));
-                            }
-
-                            return requests.ToArray();
+                            requests.AddRange(calibr.CreateRequest(RequestType.Write, calibr.GetTableCellAddress(i),
+                                calibr.Table.Cell(i).Source));
                         }
 
-                        var cellIndex = calibr.Table.LastEditCellIndex;
-                        return calibr.CreateRequest(RequestType.Write, calibr.GetTableCellAddress(cellIndex),
-                                                    calibr.Table.Cell(cellIndex).Source);
+                        return requests.ToArray();
                     }
+
+                    var cellIndex = calibr.Table.LastEditCellIndex;
+                    return calibr.CreateRequest(RequestType.Write, calibr.GetTableCellAddress(cellIndex),
+                        calibr.Table.Cell(cellIndex).Source);
+                }
 
                 default:
                     return calibr.CreateRequest(RequestType.Write, calibr.ItemInfo.Address, calibr.RawValue);
             }
         }
 
-        public static Request[] CreateRequest(this CalibrItem calibr, RequestType requestType, ushort address, int rawValue)
+        public Request[] CreateRequest(RequestType requestType, ushort address, int rawValue)
         {                      
-            var readRequests = new Request[0];
+            var readRequests = Array.Empty<Request>();
 
             byte value;
             switch (calibr.ItemInfo.SizeType)
@@ -111,7 +113,7 @@ namespace SokolovSport.Dat
             return readRequests;
         }
 
-        public static ushort GetTableCellAddress(this CalibrItem calibr, int cellIndex)
+        public ushort GetTableCellAddress(int cellIndex)
         {
             var cellSize = 1;
             switch (calibr.ItemInfo.SizeType)
@@ -131,40 +133,33 @@ namespace SokolovSport.Dat
             return (ushort) (calibr.ItemInfo.Address + cellIndex*cellSize);
         }
 
-        public static string SaveTableToString(this CalibrItem calibr)
+        private string SaveTableToString()
         {
             var values = new string[calibr.Table.ColCount];
             var buffer = new StringBuilder(calibr.Table.RowCount);
 
-            for (int i = 0; i < calibr.Table.RowCount; i++)
+            for (var i = 0; i < calibr.Table.RowCount; i++)
             {
-                for (int j = 0; j < calibr.Table.ColCount; j++)
-                {
+                for (var j = 0; j < calibr.Table.ColCount; j++)
                     values[j] = calibr.Table.Cell(j, i).Source.ToString(CultureInfo.InvariantCulture);
-                }
+                
                 buffer.AppendLine(String.Join(" ", values));
             }
 
             return buffer.ToString();
         }
 
-        public static string SaveValueToString(this CalibrItem calibr)
+        private string SaveValueToString()
         {
-            switch (calibr.ItemInfo.ItemType)
+            return calibr.ItemInfo.ItemType switch
             {
-                case ItemTypes.Const:
-                    return calibr.RawValue.ToString(CultureInfo.InvariantCulture) + Environment.NewLine;
-
-                case ItemTypes.Table:
-                case ItemTypes.Teach:
-                    return calibr.SaveTableToString();
-
-                default:
-                    return String.Empty;
-            }       
+                ItemTypes.Const => calibr.RawValue.ToString(CultureInfo.InvariantCulture) + Environment.NewLine,
+                ItemTypes.Table or ItemTypes.Teach => calibr.SaveTableToString(),
+                _ => string.Empty
+            };
         }
 
-        public static string SaveToString(this CalibrItem calibr)
+        private string SaveToString()
         {
             var buffer = new StringBuilder();
 
@@ -177,21 +172,21 @@ namespace SokolovSport.Dat
             buffer.AppendLine(calibr.VisualCalibr2Name);
             buffer.AppendLine(calibr.ItemInfo.SaveToString());
             var value = calibr.SaveValueToString();
-            if (!String.IsNullOrEmpty(value))
+            
+            if (!string.IsNullOrEmpty(value))
                 buffer.Append(value);
 
             return buffer.ToString();
         }
-
-        public static string SaveToString(this DatFile datFile)
-        {
-            var buffer = new StringBuilder(datFile.Calibrations.Count);
-            foreach (var calibr in datFile.Calibrations.Values)
-            {
-                buffer.Append(SaveToString(calibr));
-            }
-
-            return buffer.ToString();
-        }        
     }
+
+    public static string SaveToString(this DatFile datFile)
+    {
+        var buffer = new StringBuilder(datFile.Calibrations.Count);
+        
+        foreach (var calibr in datFile.Calibrations.Values)
+            buffer.Append(SaveToString(calibr));
+
+        return buffer.ToString();
+    }        
 }

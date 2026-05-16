@@ -3,43 +3,33 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO.Ports;
 
-namespace SerialPortEx
+namespace SerialPortEx;
+
+public class SerialPortNameConverter : TypeConverter
 {
-    public class SerialPortNameConverter : TypeConverter
+    // Fields
+    private static StandardValuesCollection values;
+
+    // Methods
+    public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
     {
-        // Fields
-        private static StandardValuesCollection values;
-
-        // Methods
-        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-        {
-            return ((sourceType == typeof(string)) || base.CanConvertFrom(context, sourceType));
-        }
-
-        public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
-        {            
-            return values ?? (values = new StandardValuesCollection(SerialPort.GetPortNames()));
-        }        
-
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
-        {
-            if (value is string)
-            {
-                string str = ((string)value).Trim();
-                return str;
-            }
-
-            return base.ConvertFrom(context, culture, value);
-        }       
-
-        public override bool GetStandardValuesExclusive(ITypeDescriptorContext context)
-        {
-            return false;
-        }
-
-        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
-        {
-            return true;
-        }
+        return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
     }
+
+    public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
+    {            
+        return values ??= new StandardValuesCollection(SerialPort.GetPortNames());
+    }        
+
+    public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+    {
+        if (value is not string) 
+            return base.ConvertFrom(context, culture, value);
+        
+        return ((string)value).Trim();
+    }       
+
+    public override bool GetStandardValuesExclusive(ITypeDescriptorContext context) => false;
+    
+    public override bool GetStandardValuesSupported(ITypeDescriptorContext context) => true;
 }

@@ -87,7 +87,7 @@ namespace LumenWorks.Framework.IO.Csv
 		/// <param name="message">The message that describes the error.</param>
 		/// <param name="innerException">The exception that is the cause of the current exception.</param>
 		public MalformedCsvException(string message, Exception innerException)
-			: base(String.Empty, innerException)
+			: base(string.Empty, innerException)
 		{
 			_message = (message == null ? string.Empty : message);
 
@@ -118,7 +118,7 @@ namespace LumenWorks.Framework.IO.Csv
 		/// <param name="currentFieldIndex">The current field index.</param>
 		/// <param name="innerException">The exception that is the cause of the current exception.</param>
 		public MalformedCsvException(string rawData, int currentPosition, long currentRecordIndex, int currentFieldIndex, Exception innerException)
-			: base(String.Empty, innerException)
+			: base(string.Empty, innerException)
 		{
 			_rawData = (rawData == null ? string.Empty : rawData);
 			_currentPosition = currentPosition;

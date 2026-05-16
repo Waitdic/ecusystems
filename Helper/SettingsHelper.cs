@@ -1,16 +1,13 @@
 ﻿using System.Windows.Forms;
 
-namespace Helper
+namespace Helper;
+
+public static class SettingsHelper
 {
-    public static class SettingsHelper
+    public static bool ShowSettingsDialog(IWin32Window owner, object settings)
     {
-        public static bool ShowSettingsDialog(IWin32Window owner, object settings)
-        {
-            using (var sf = new SettingsForm())
-            {
-                sf.Prepare(settings);
-                return sf.ShowDialog(owner) == DialogResult.OK;
-            }
-        }
+        using var sf = new SettingsForm();
+        sf.Prepare(settings);
+        return sf.ShowDialog(owner) == DialogResult.OK;
     }
 }

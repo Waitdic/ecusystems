@@ -3,74 +3,75 @@ using System.IO;
 using System.Windows.Forms;
 using EcuCommunication.Protocols;
 
-namespace OpenOLT
+namespace OpenOLT;
+
+class DataLogger: IDisposable
 {
-    class DataLogger: IDisposable
+    private FileStream _file;
+    private StreamWriter _writer;
+    private byte _count;
+
+    public bool Enabled { get; set; }
+
+    public DataLogger()
+    {        
+        Enabled = true;
+    }        
+
+    public void WriteData(DiagData diagData)
     {
-        private FileStream file;
-        private StreamWriter writer;
-        private byte count;
+        if (!Enabled) return;
 
-        public bool Enabled { get; set; }
-
-        public DataLogger()
-        {        
-            Enabled = true;
-        }        
-
-        public void WriteData(DiagData diagData)
+        if (_file == null)
         {
-            if (!Enabled) return;
-
-            if (file == null)
-            {
-                InitLogFile();
-                writer.WriteLine(diagData.GetLogHeader());
-            }
-
-            writer.WriteLine(diagData.GetDataRow());
-            count++;
-            if (count < 100) return;
-            Flush();
+            InitLogFile();
+            _writer.WriteLine(diagData.GetLogHeader());
         }
 
-        public void Flush()
-        {
-            if (count == 0 || writer == null) return;
-            writer.Flush();
-            count = 0;
-        }
-
-        private void InitLogFile()
-        {            
-            var basePath = Application.StartupPath + @"\logs\";
-            if (!Directory.Exists(basePath))
-                Directory.CreateDirectory(basePath);
-
-            var fileName = String.Format("{0}_{1}.csv", DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH-mm-ss"));
-            var filePath = basePath + fileName;
-            file = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write, FileShare.Read);
-            writer = new StreamWriter(file);            
-        }
-
-        public void Close()
-        {
-            if (file == null) return;
-            writer.Flush();
-            writer.Close();
-            writer = null;
-
-            file.Close();
-            file = null;
-        }
-
-        #region Implementation of IDisposable
-
-        public void Dispose()
-        {
-            Close();
-        }
-
-        #endregion
+        _writer.WriteLine(diagData.GetDataRow());
+        _count++;
+        
+        if (_count < 100) return;
+        
+        Flush();
     }
+
+    public void Flush()
+    {
+        if (_count == 0 || _writer == null) return;
+        _writer.Flush();
+        _count = 0;
+    }
+
+    private void InitLogFile()
+    {            
+        var basePath = Application.StartupPath + @"\logs\";
+        if (!Directory.Exists(basePath))
+            Directory.CreateDirectory(basePath);
+
+        var fileName = $"{DateTime.Now.ToString("yyyy-MM-dd")}_{DateTime.Now.ToString("HH-mm-ss")}.csv";
+        var filePath = basePath + fileName;
+        _file = new FileStream(filePath, FileMode.CreateNew, FileAccess.Write, FileShare.Read);
+        _writer = new StreamWriter(_file);            
+    }
+
+    public void Close()
+    {
+        if (_file == null) return;
+        _writer.Flush();
+        _writer.Close();
+        _writer = null;
+
+        _file.Close();
+        _file = null;
+    }
+
+    #region Implementation of IDisposable
+
+    public void Dispose()
+    {
+        Close();
+    }
+
+    #endregion
 }

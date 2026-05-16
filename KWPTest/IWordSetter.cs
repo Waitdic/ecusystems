@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace KWPTest
+namespace KWPTest;
+
+public interface IWordSetter
 {
-    public interface IWordSetter
-    {
-        ushort Value { get; set; }
-        byte Byte1 { get; }
-        byte Byte2 { get; }
-        event EventHandler OnValueChange;
-    }
+    ushort Value { get; set; }
+    byte Byte1 { get; }
+    byte Byte2 { get; }
+    event EventHandler OnValueChange;
 }

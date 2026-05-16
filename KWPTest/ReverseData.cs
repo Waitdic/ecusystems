@@ -1,22 +1,21 @@
 ﻿using Helper;
 
-namespace KWPTest
+namespace KWPTest;
+
+class ReverseData
 {
-    class ReverseData
+    public static readonly ReverseData instance = new();
+
+    public bool enabled;
+    public string requestHeader;
+    public string answerHeader;
+    public string answerData;
+
+    public byte[] answer;
+
+    public void Prepare()
     {
-        public readonly static ReverseData instance = new ReverseData();
-
-        public bool Enabled;
-        public string RequestHeader;
-        public string AnswerHeader;
-        public string AnswerData;
-
-        public byte[] Answer;
-
-        public void Prepare()
-        {
-            Answer = DataHelper.StrToByteArray(AnswerHeader + AnswerData + "00");
-            DataHelper.CalcCRC(Answer);
-        }
+        answer = DataHelper.StrToByteArray(answerHeader + answerData + "00");
+        DataHelper.CalcCRC(answer);
     }
 }

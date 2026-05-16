@@ -1,21 +1,18 @@
-﻿using System;
-using Helper;
+﻿using Helper;
 
-namespace EcuCommunication.Protocols.Requests
+namespace EcuCommunication.Protocols.Requests;
+
+internal class IoControlRequest: JRequest
 {
-    internal class IoControlRequest: JRequest
+    public void StopCapture(byte id)
     {
-        public void StopCapture(byte id)
-        {
-            requestBuffer = DataHelper.StrToByteArray(String.Format("8310F130{0}0000", id.ToString("X2")));
-            CalcCRC();
-        }
-
-        public void StartCaptureAndSetValue(byte id, byte value)
-        {
-            requestBuffer =
-                DataHelper.StrToByteArray(String.Format("8410F130{0}07{1}00", id.ToString("X2"), value.ToString("X2")));
-            CalcCRC();
-        }       
+        requestBuffer = DataHelper.StrToByteArray($"8310F130{id.ToString("X2")}0000");
+        CalcCRC();
     }
+
+    public void StartCaptureAndSetValue(byte id, byte value)
+    {
+        requestBuffer = DataHelper.StrToByteArray($"8410F130{id.ToString("X2")}07{value.ToString("X2")}00");
+        CalcCRC();
+    }       
 }

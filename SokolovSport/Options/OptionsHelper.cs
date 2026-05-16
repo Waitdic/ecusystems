@@ -2,32 +2,29 @@
 using System.Windows.Forms;
 using Helper;
 
-namespace SokolovSport.Options
+namespace SokolovSport.Options;
+
+static class OptionsHelper
 {
-    static class OptionsHelper
+    public static OptionsEntity Options { get; }
+
+    private static readonly LocalSettingsKeeper SettingsKeeper;
+
+    static OptionsHelper()
+    {         
+        Options = new OptionsEntity();
+        SettingsKeeper = new LocalSettingsKeeper();
+        SettingsKeeper.LoadSettings(Options);
+        var datFiles = LocalSettingsHelper.GetValues<string>(SettingsKeeper, "OPENED_DAT_FILE");
+        Options.OpenedDatFile.AddRange(datFiles);
+    }
+
+    public static void OpenDialog(IWin32Window owner) 
+        => SettingsHelper.ShowSettingsDialog(owner, Options);
+
+    public static void SaveSettings()
     {
-        private static readonly OptionsEntity options;
-        public static OptionsEntity Options { get { return options; } }
-        public static readonly LocalSettingsKeeper SettingsKeeper;
-
-        static OptionsHelper()
-        {         
-            options = new OptionsEntity();
-            SettingsKeeper = new LocalSettingsKeeper();
-            SettingsKeeper.LoadSettings(options);
-            var datFiles = LocalSettingsHelper.GetValues<string>(SettingsKeeper, "OPENED_DAT_FILE");
-            options.OpenedDatFile.AddRange(datFiles);
-        }
-
-        public static bool OpenDialog(IWin32Window owner)
-        {            
-            return SettingsHelper.ShowSettingsDialog(owner, options);
-        }
-
-        public static void SaveSettings()
-        {
-            LocalSettingsHelper.SetValues(SettingsKeeper, "OPENED_DAT_FILE", options.OpenedDatFile.Take(20).ToArray());
-            SettingsKeeper.SaveSettings(options);
-        }
+        LocalSettingsHelper.SetValues(SettingsKeeper, "OPENED_DAT_FILE", Options.OpenedDatFile.Take(20).ToArray());
+        SettingsKeeper.SaveSettings(Options);
     }
 }

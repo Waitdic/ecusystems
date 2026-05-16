@@ -1,8 +1,7 @@
-﻿namespace EcuCommunication.Protocols
+﻿namespace EcuCommunication.Protocols;
+
+internal interface IDiagDataRequest
 {
-    internal interface IDiagDataRequest
-    {
-        DiagData DiagData { get; }
-        bool IsOnline { get; }
-    }
+    DiagData DiagData { get; }
+    bool IsOnline { get; }
 }

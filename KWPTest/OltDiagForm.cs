@@ -1,56 +1,61 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace KWPTest
+namespace KWPTest;
+
+public partial class OltDiagForm : Form
 {
-    public partial class OltDiagForm : Form
+    private readonly OltDiagParams _diagParams;
+
+    public OltDiagForm(OltDiagParams diagParams)
     {
-        private readonly OltDiagParams diagParams;
+        _diagParams = diagParams;
+        InitializeComponent();
+    }
 
-        public OltDiagForm(OltDiagParams diagParams)
+    private void OltDiagForm_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        if (e.CloseReason != CloseReason.UserClosing) return;
+        
+        e.Cancel = true;
+        Hide();
+    }
+
+    private void ParamsApply()
+    {
+        _diagParams.bytes[0] = byte0.Value;
+        _diagParams.bytes[1] = byte1.Value;
+
+        foreach (Control control in Controls)
         {
-            this.diagParams = diagParams;
-            InitializeComponent();
-        }
+            if (control.Tag == null) continue;
 
-        private void OltDiagForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (e.CloseReason != CloseReason.UserClosing) return;
-            e.Cancel = true;
-            Hide();
-        }
-
-        private void ParamsApply()
-        {
-            diagParams.bytes[0] = byte0.Value;
-            diagParams.bytes[1] = byte1.Value;
-
-            foreach (Control control in Controls)
+            switch (control)
             {
-                if (control.Tag == null) continue;
-
-                if (control is IByteSetter)
+                case IByteSetter setter:
                 {
                     var index = Convert.ToInt32(control.Tag);
-                    diagParams.bytes[index] = ((IByteSetter) control).Value;
+                    _diagParams.bytes[index] = setter.Value;
+                    break;
                 }
-                else if (control is IWordSetter)
+                case IWordSetter setter:
                 {
                     var index = Convert.ToInt32(control.Tag);
-                    diagParams.bytes[index] = ((IWordSetter)control).Byte1;
-                    diagParams.bytes[index + 1] = ((IWordSetter)control).Byte2;
+                    _diagParams.bytes[index] = setter.Byte1;
+                    _diagParams.bytes[index + 1] = setter.Byte2;
+                    break;
                 }
             }
         }
+    }
 
-        private void bytes_OnValueChange(object sender, EventArgs e)
-        {
-            ParamsApply();
-        }
+    private void bytes_OnValueChange(object sender, EventArgs e)
+    {
+        ParamsApply();
+    }
 
-        private void word_OnValueChange(object sender, EventArgs e)
-        {
-            ParamsApply();
-        }
+    private void word_OnValueChange(object sender, EventArgs e)
+    {
+        ParamsApply();
     }
 }

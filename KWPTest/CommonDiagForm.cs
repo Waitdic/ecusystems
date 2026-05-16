@@ -1,57 +1,58 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace KWPTest
+namespace KWPTest;
+
+public partial class CommonDiagForm : Form
 {
-    public partial class CommonDiagForm : Form
+    private readonly CommonDiagParams _commonDiagParams;
+
+    public CommonDiagForm(CommonDiagParams commonDiagParams)
     {
-        private readonly CommonDiagParams commonDiagParams;
+        _commonDiagParams = commonDiagParams;
+        InitializeComponent();
+    }
 
-        public CommonDiagForm(CommonDiagParams commonDiagParams)
+    private void OltDiagForm_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        if (e.CloseReason != CloseReason.UserClosing) return;
+        e.Cancel = true;
+        Hide();
+    }
+
+    private void ParamsApply()
+    {
+        _commonDiagParams.bytes[0] = byte0.Value;
+        _commonDiagParams.bytes[1] = byte1.Value;
+        _commonDiagParams.bytes[2] = byte2.Value;
+        _commonDiagParams.bytes[3] = byte3.Value;
+        _commonDiagParams.bytes[4] = byte4.Value;
+        _commonDiagParams.bytes[5] = byte5.Value;
+        _commonDiagParams.bytes[6] = byte6.Value;
+        _commonDiagParams.bytes[7] = byte7.Value;
+
+        foreach (Control control in Controls)
         {
-            this.commonDiagParams = commonDiagParams;
-            InitializeComponent();
-        }
+            if (control.Tag == null) continue;
 
-        private void OltDiagForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (e.CloseReason != CloseReason.UserClosing) return;
-            e.Cancel = true;
-            Hide();
-        }
-
-        private void ParamsApply()
-        {
-            commonDiagParams.bytes[0] = byte0.Value;
-            commonDiagParams.bytes[1] = byte1.Value;
-            commonDiagParams.bytes[2] = byte2.Value;
-            commonDiagParams.bytes[3] = byte3.Value;
-            commonDiagParams.bytes[4] = byte4.Value;
-            commonDiagParams.bytes[5] = byte5.Value;
-            commonDiagParams.bytes[6] = byte6.Value;
-            commonDiagParams.bytes[7] = byte7.Value;
-
-            foreach (Control control in Controls)
+            switch (control)
             {
-                if (control.Tag == null) continue;
-
-                if (control is IByteSetter)
+                case IByteSetter setter:
                 {
                     var index = Convert.ToInt32(control.Tag);
-                    commonDiagParams.bytes[index] = ((IByteSetter)control).Value;
+                    _commonDiagParams.bytes[index] = setter.Value;
+                    break;
                 }
-                else if (control is IWordSetter)
+                case IWordSetter setter:
                 {
                     var index = Convert.ToInt32(control.Tag);
-                    commonDiagParams.bytes[index] = ((IWordSetter)control).Byte1;
-                    commonDiagParams.bytes[index + 1] = ((IWordSetter)control).Byte2;
+                    _commonDiagParams.bytes[index] = setter.Byte1;
+                    _commonDiagParams.bytes[index + 1] = setter.Byte2;
+                    break;
                 }
             }
         }
-
-        private void byte_OnValueChange(object sender, EventArgs e)
-        {
-            ParamsApply();
-        }
     }
+
+    private void byte_OnValueChange(object sender, EventArgs e) => ParamsApply();
 }

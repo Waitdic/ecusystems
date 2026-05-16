@@ -274,13 +274,13 @@ namespace CalibrGui
 
             for (var i = 0; i < rtGrid.RowCount; i++)
             {
-                rtGrid.Rows[i].HeaderCell.Value = table.AxisY == null ? String.Empty : table.AxisY[i].ToString();
+                rtGrid.Rows[i].HeaderCell.Value = table.AxisY == null ? string.Empty : table.AxisY[i].ToString();
             }
 
             for (var i = 0; i < rtGrid.ColumnCount; i++)
             {
                 rtGrid.Columns[i].Width = 50;
-                rtGrid.Columns[i].HeaderCell.Value = table.AxisX == null ? String.Empty : table.AxisX[i].ToString();
+                rtGrid.Columns[i].HeaderCell.Value = table.AxisX == null ? string.Empty : table.AxisX[i].ToString();
                 rtGrid.Columns[i].ValueType = typeof(float);
             }
         }
@@ -628,7 +628,7 @@ namespace CalibrGui
             for (var x = 0; x < rtGrid.RowCount; x++)
             {
                 RamChart.Series.Add(table.AxisY == null ? x.ToString() : table.AxisY[x].ToString());
-                //RamChart.Titles.Add(table.AxisY == null ? String.Empty : table.AxisY[x].ToString());
+                //RamChart.Titles.Add(table.AxisY == null ? string.Empty : table.AxisY[x].ToString());
                 RamChart.Series[x].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
                 RamChart.Series[x].Color = Color.FromArgb(160, Color.DarkBlue);
                 RamChart.Series[x].BorderWidth = 2;

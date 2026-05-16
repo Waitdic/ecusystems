@@ -3,45 +3,40 @@ using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Collections.Generic;
 
-namespace Crad.Windows.Forms.Actions.Design
+namespace Crad.Windows.Forms.Actions.Design;
+
+internal sealed class ActionCollectionEditor : CollectionEditor
 {
-    internal sealed class ActionCollectionEditor : CollectionEditor
+    private Type[] _returnedTypes;
+
+    public ActionCollectionEditor() : base(typeof(ActionCollection)) {}
+
+    protected override Type[] CreateNewItemTypes()
     {
-        private Type[] returnedTypes;
+        return _returnedTypes;
+    }
+    public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+    {
+        _returnedTypes ??= GetReturnedTypes(provider);
 
-        public ActionCollectionEditor()
-            : base(typeof(ActionCollection))
-        {}
+        return base.EditValue(context, provider, value);
+    }
 
-        protected override Type[] CreateNewItemTypes()
+    private static Type[] GetReturnedTypes(IServiceProvider provider)
+    {
+        var res = new List<Type>();
+
+        var tds = (ITypeDiscoveryService)provider.GetService(typeof(ITypeDiscoveryService));
+
+        if (tds == null) return res.ToArray();
+        
+        foreach (Type actionType in tds.GetTypes(typeof(Action), false))
         {
-            return returnedTypes;
-        }
-        public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
-        {
-            if (returnedTypes == null)
-            {
-                returnedTypes = getReturnedTypes(provider);
-            }
-            return base.EditValue(context, provider, value);
+            if (actionType.GetCustomAttributes(typeof(StandardActionAttribute), false).Length > 0 &&
+                !res.Contains(actionType))
+                res.Add(actionType);
         }
 
-        private Type[] getReturnedTypes(IServiceProvider provider)
-        {
-            List<Type> res = new List<Type>();
-
-            ITypeDiscoveryService tds = (ITypeDiscoveryService)
-                provider.GetService(typeof(ITypeDiscoveryService));
-            
-            if (tds != null)
-                foreach (Type actionType in tds.GetTypes(typeof(Action), false))
-                {
-                    if (actionType.GetCustomAttributes(typeof(StandardActionAttribute), false).Length > 0 &&
-                    !res.Contains(actionType))
-                        res.Add(actionType);
-                }
-
-            return res.ToArray();
-        }
+        return res.ToArray();
     }
 }

@@ -1,18 +1,11 @@
-﻿namespace Helper
+﻿namespace Helper;
+
+public class WMASmoothing(byte window)
 {
-    public class WMASmoothing
-    {
-        private byte windows;
-        private ulong count;
-        private float[] values;
-        public float Value { get; private set; }
+    private byte _windows;
+    private ulong count;
+    private float[] _values = new float[window];
+    public float Value { get; }
 
-        public WMASmoothing(byte window)
-        {
-            values = new float[window];
-        }
-
-        public void Add(float value)
-        {}
-    }
+    public void Add(float value) {}
 }

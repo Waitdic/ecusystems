@@ -98,29 +98,29 @@ namespace CtpMaps.DataTypes
             {
                 case 3:
                     var entry1D = mapEntry.Entry1D;
-                    str = String.Join(":", new[] { str, entry1D.Addr.ToString("X4"), entry1D.Units.Replace("\r", String.Empty).Replace("\n", String.Empty), entry1D.Const_type > 1 ? "1" : "0" });
+                    str = String.Join(":", new[] { str, entry1D.Addr.ToString("X4"), entry1D.Units.Replace("\r", string.Empty).Replace("\n", string.Empty), entry1D.Const_type > 1 ? "1" : "0" });
                     break;
 
                 case 1:
                     var entry2D = mapEntry.Entry2D;
-                    str = String.Join(":", new[] { str, entry2D.Addr.ToString("X4"), (entry2D.Units + " - " + entry2D.xUnits).Replace("\r", String.Empty).Replace("\n", String.Empty), entry2D.xPoints.ToString() });
+                    str = String.Join(":", new[] { str, entry2D.Addr.ToString("X4"), (entry2D.Units + " - " + entry2D.xUnits).Replace("\r", string.Empty).Replace("\n", string.Empty), entry2D.xPoints.ToString() });
                     break;
 
                 case 2:
                     var entry3D = mapEntry.Entry3D;
                     str = String.Join(":", new[] { str, entry3D.Addr.ToString("X4"), (entry3D.Units + " - " + entry3D.xUnits + " - " + entry3D.zUnits)
-                        .Replace("\r", String.Empty).Replace("\n", String.Empty), 
+                        .Replace("\r", string.Empty).Replace("\n", string.Empty), 
                         entry3D.xPoints.ToString(), entry3D.zPoints.ToString() });
                     break;
 
                 case 4:
                     var flags = mapEntry.FlagsEntry;
-                    var strItems = String.Empty;
+                    var strItems = string.Empty;
                     for (int i = 0; i < flags.Addr.Length; i++)
                     {
                         if (flags.Addr[i] == 0xFFFFFFFF) continue;
 
-                        var bitsName = String.Empty;
+                        var bitsName = string.Empty;
                         for (int j = 0; j < 8; j++)
                         {                            
                             bitsName = String.Join("|", new[] {bitsName, flags.BitsName[i, j]});
@@ -135,7 +135,7 @@ namespace CtpMaps.DataTypes
 
                 case 5:
                     var ident = mapEntry.IdentEntry;
-                    var identItems = String.Empty;
+                    var identItems = string.Empty;
                     for (int i = 0; i < ident.Addr.Length; i++)
                     {
                         if (ident.Length[i] == 0) continue;
@@ -151,7 +151,7 @@ namespace CtpMaps.DataTypes
                     break;
 
                 default:
-                    return String.Empty;
+                    return string.Empty;
             }
 
             return str;

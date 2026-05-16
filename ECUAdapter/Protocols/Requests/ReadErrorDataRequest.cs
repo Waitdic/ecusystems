@@ -1,41 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace EcuCommunication.Protocols.Requests
-{    
-    public sealed class ReadErrorDataRequest : JRequest
-    {        
-        public readonly List<ECUError> Errors = new List<ECUError>();
+namespace EcuCommunication.Protocols.Requests;
 
-        public ReadErrorDataRequest()
-            : base("8410F11800FF009C")
-        {
-        }
+public sealed class ReadErrorDataRequest : JRequest
+{        
+    public readonly List<ECUError> errors = [];
 
-        protected override void DoExecute(EventArgs e)
-        {
-            base.DoExecute(e);
+    public ReadErrorDataRequest() : base("8410F11800FF009C")
+    {
+    }
 
-            if (Test())
-            {
-                ParseValues();
-            }            
-        }
+    protected override void DoExecute(EventArgs e)
+    {
+        base.DoExecute(e);
 
-        private void ParseValues()
-        {
-            Errors.Clear();
-            var valueOffset = replyValueOffset;
-            var count = replyBuffer[valueOffset++];
+        if (Test())
+            ParseValues();
+    }
 
-            if ((valueOffset + count*3 + 1) > replyBuffer.Length) return;
+    private void ParseValues()
+    {
+        errors.Clear();
+        var valueOffset = replyValueOffset;
+        var count = replyBuffer[valueOffset++];
+
+        if (valueOffset + count*3 + 1 > replyBuffer.Length) return;
             
-            for (int i = 0; i < count; i++)
-            {
-                var code = (ushort)((replyBuffer[valueOffset++] << 8) + replyBuffer[valueOffset++]);
-                var status = replyBuffer[valueOffset++];
-                Errors.Add(ECUErrorFactory.CreateECUError(code, status));
-            }
+        for (var i = 0; i < count; i++)
+        {
+            var code = (ushort)((replyBuffer[valueOffset++] << 8) + replyBuffer[valueOffset++]);
+            var status = replyBuffer[valueOffset++];
+                
+            errors.Add(ECUErrorFactory.CreateECUError(code, status));
         }
     }
 }

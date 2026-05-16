@@ -1,17 +1,16 @@
 ﻿using System;
 
-namespace EcuCommunication.Protocols
+namespace EcuCommunication.Protocols;
+
+public interface IDiagProtocol
 {
-    public interface IDiagProtocol
-    {
-        bool Connected { get; }     
+    bool Connected { get; }     
 
-        TimeSpan Time { get; }
+    TimeSpan Time { get; }
 
-        event EventHandler OnConnect;
-        event EventHandler OnDisconnect;
-        event EventHandler OnDiagUpdate;
+    event EventHandler OnConnect;
+    event EventHandler OnDisconnect;
+    event EventHandler OnDiagUpdate;
         
-        DiagData GetDiagData();
-    }
+    DiagData GetDiagData();
 }

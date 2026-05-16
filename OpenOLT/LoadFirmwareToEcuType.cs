@@ -1,14 +1,13 @@
 ﻿using System.ComponentModel;
 
-namespace OpenOLT
+namespace OpenOLT;
+
+public enum LoadFirmwareToEcuType
 {
-    public enum LoadFirmwareToEcuType
-    {
-        [Description("Только корректируемые таблицы")]
-        OnlyCorrectionTable,
-        [Description("Всю область калибровок")]
-        FullLoad,
-        [Description("Ничего")]
-        None
-    }
+    [Description("Только корректируемые таблицы")]
+    OnlyCorrectionTable,
+    [Description("Всю область калибровок")]
+    FullLoad,
+    [Description("Ничего")]
+    None
 }

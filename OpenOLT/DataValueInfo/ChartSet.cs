@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 
-namespace OpenOLT.DataValueInfo
-{
-    internal class ChartSet
-    {
-        public string Name { get; set; }
-        public List<ValueInfo> Items { get; private set; }
+namespace OpenOLT.DataValueInfo;
 
-        public ChartSet()
-        {
-            Items = new List<ValueInfo>();
-        }
+internal class ChartSet
+{
+    public string Name { get; set; }
+    public List<ValueInfo> Items { get; private set; }
+
+    public ChartSet()
+    {
+        Items = [];
     }
 }

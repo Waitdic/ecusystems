@@ -3,145 +3,134 @@ using System.Linq;
 using System.Windows.Forms;
 using OpenOLT.DataValueInfo;
 
-namespace OpenOLT.GUI
+namespace OpenOLT.GUI;
+
+internal partial class OpenCharts : Form
 {
-    internal partial class OpenCharts : Form
+    private DiagDataKeeper _dataKeeper;        
+
+    public OpenCharts()
     {
-        private DiagDataKeeper dataKeeper;        
+        InitializeComponent();
+    }
 
-        public OpenCharts()
-        {
-            InitializeComponent();
-        }
+    public void Init(DiagDataKeeper dataKeeper)
+    {
+        _dataKeeper = dataKeeper;
 
-        public void Init(DiagDataKeeper dataKeeper)
-        {
-            this.dataKeeper = dataKeeper;
+        foreach (var valueInfo in dataKeeper.valueInfos)
+            allAvailabeCharts.Items.Add(valueInfo.Title);
 
-            foreach (var valueInfo in dataKeeper.valueInfos)
-            {
-                allAvailabeCharts.Items.Add(valueInfo.Title);
-            }
+        foreach (var chartSet in dataKeeper.chartSets)
+            chartSetsComboBox.Items.Add(chartSet.Name);
+    }
 
-            foreach (var chartSet in dataKeeper.chartSets)
-            {
-                chartSetsComboBox.Items.Add(chartSet.Name);
-            }
-        }
-
-        private void allAvailabeCharts_DoubleClick(object sender, EventArgs e)
-        {
-            var chartIndex = allAvailabeCharts.SelectedIndex;
-            if (chartIndex >= dataKeeper.valueInfos.Length) return;
-            var chart = dataKeeper.valueInfos[chartIndex];
-            if (selectedChars.Items.Contains(chart.Title) && MessageBox.Show(this, "Данный график уже добавлен. Хотети добавить еще раз?", 
-                                                          "Внимание", MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
-                return;
+    private void allAvailabeCharts_DoubleClick(object sender, EventArgs e)
+    {
+        var chartIndex = allAvailabeCharts.SelectedIndex;
+        if (chartIndex >= _dataKeeper.valueInfos.Length) return;
+        var chart = _dataKeeper.valueInfos[chartIndex];
+        if (selectedChars.Items.Contains(chart.Title) && MessageBox.Show(this, "Данный график уже добавлен. Хотети добавить еще раз?", 
+                "Внимание", MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+            return;
             
 
-            selectedChars.Items.Add(chart.Title);
+        selectedChars.Items.Add(chart.Title);
 
-            var currentSet = GetCurrentSet();
-            if (currentSet == null) return;
-            currentSet.Items.Add(chart);
+        var currentSet = GetCurrentSet();
+        currentSet?.Items.Add(chart);
+    }
+
+    private void selectedChars_DoubleClick(object sender, EventArgs e)
+    {
+        var chartIndex = selectedChars.SelectedIndex;
+        if (chartIndex < 0) return;
+        
+        selectedChars.Items.RemoveAt(chartIndex);            
+
+        var currentSet = GetCurrentSet();
+        currentSet?.Items.RemoveAt(chartIndex);
+    }
+
+    private void chartSetsComboBox_Leave(object sender, EventArgs e)
+    {
+        if (selectedChars.Items.Count == 0) return;
+
+        var setName = chartSetsComboBox.Text;
+        if (string.IsNullOrWhiteSpace(setName)) return;
+
+        if (_dataKeeper.chartSets.Any(item => item.Name == setName)) return;
+
+        var set = new ChartSet{Name = setName};
+
+        foreach (string item in selectedChars.Items)
+        {
+            var itemInfo = item;
+            set.Items.Add(_dataKeeper.valueInfos.First(info => info.Title == itemInfo));
         }
 
-        private void selectedChars_DoubleClick(object sender, EventArgs e)
-        {
-            var chartIndex = selectedChars.SelectedIndex;
-            if (chartIndex < 0) return;
-            selectedChars.Items.RemoveAt(chartIndex);            
+        _dataKeeper.chartSets.Add(set);
+        chartSetsComboBox.Items.Add(set.Name);
+    }
 
-            var currentSet = GetCurrentSet();
-            if (currentSet == null) return;
-            currentSet.Items.RemoveAt(chartIndex);
-        }
+    private ChartSet GetCurrentSet()
+    {
+        if (selectedChars.Items.Count == 0) return null;
 
-        private void chartSetsComboBox_Leave(object sender, EventArgs e)
-        {
-            if (selectedChars.Items.Count == 0) return;
+        var setName = chartSetsComboBox.Text;
+        if (string.IsNullOrWhiteSpace(setName)) return null;
 
-            var setName = chartSetsComboBox.Text;
-            if (String.IsNullOrWhiteSpace(setName)) return;
+        var chartSet = _dataKeeper.chartSets.FirstOrDefault(item => item.Name == setName);
+        if (chartSet != null) return chartSet;
+        
+        chartSet = new ChartSet { Name = setName };
+        _dataKeeper.chartSets.Add(chartSet);
+        chartSetsComboBox.Items.Add(chartSet.Name);
 
-            if (dataKeeper.chartSets.Any(item => item.Name == setName)) return;
+        return chartSet;
+    }
 
-            var set = new ChartSet{Name = setName};
+    private void chartSetsComboBox_KeyDown(object sender, KeyEventArgs e) 
+        => selectedChars.Items.Clear();
 
-            foreach (string item in selectedChars.Items)
-            {
-                var itemInfo = item;
-                set.Items.Add(dataKeeper.valueInfos.First(info => info.Title == itemInfo));
-            }
+    private void delSet_Click(object sender, EventArgs e)
+    {
+        var index = chartSetsComboBox.SelectedIndex;
+        if (index < 0 || index >= _dataKeeper.chartSets.Count) return;
 
-            dataKeeper.chartSets.Add(set);
-            chartSetsComboBox.Items.Add(set.Name);
-        }
+        _dataKeeper.chartSets.RemoveAt(index);
+        selectedChars.Items.Clear();
+        chartSetsComboBox.Text = string.Empty;
+    }
 
-        private ChartSet GetCurrentSet()
-        {
-            if (selectedChars.Items.Count == 0) return null;
+    private void chartSetsComboBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        var index = chartSetsComboBox.SelectedIndex;
+        if (index < 0 || index >= _dataKeeper.chartSets.Count) return;
 
-            var setName = chartSetsComboBox.Text;
-            if (String.IsNullOrWhiteSpace(setName)) return null;
+        var chartSet = _dataKeeper.chartSets[index];
 
-            var chartSet = dataKeeper.chartSets.FirstOrDefault(item => item.Name == setName);
-            if (chartSet == null)
-            {
-                chartSet = new ChartSet { Name = setName };
-                dataKeeper.chartSets.Add(chartSet);
-                chartSetsComboBox.Items.Add(chartSet.Name);
-            }
+        selectedChars.Items.Clear();
+        
+        foreach (var item in chartSet.Items)
+            selectedChars.Items.Add(item.Title);
+    }
 
-            return chartSet;
-        }
+    public ValueInfo[] GetSelectedCharts()
+    {
+        var res =
+            selectedChars.Items.OfType<string>().Select(
+                item => _dataKeeper.valueInfos.First(info => info.Title == item)).ToArray();
 
-        private void chartSetsComboBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            selectedChars.Items.Clear();            
-        }
+        return res;
+    }
 
-        private void delSet_Click(object sender, EventArgs e)
-        {
-            var index = chartSetsComboBox.SelectedIndex;
-            if (index < 0 || index >= dataKeeper.chartSets.Count) return;
-
-            dataKeeper.chartSets.RemoveAt(index);
-            selectedChars.Items.Clear();
-            chartSetsComboBox.Text = String.Empty;
-        }
-
-        private void chartSetsComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var index = chartSetsComboBox.SelectedIndex;
-            if (index < 0 || index >= dataKeeper.chartSets.Count) return;
-
-            var chartSet = dataKeeper.chartSets[index];
-
-            selectedChars.Items.Clear();
-            foreach (var item in chartSet.Items)
-            {
-                selectedChars.Items.Add(item.Title);
-            }
-        }
-
-        public ValueInfo[] GetSelectedCharts()
-        {
-            var res =
-                selectedChars.Items.OfType<string>().Select(
-                    item => dataKeeper.valueInfos.First(info => info.Title == item)).ToArray();
-
-            return res;
-
-        }
-
-        private void btnOpen_Click(object sender, EventArgs e)
-        {
-            var res =
-                selectedChars.Items.OfType<string>().Select(
-                    item => dataKeeper.valueInfos.First(info => info.Title == item)).ToArray();
+    private void btnOpen_Click(object sender, EventArgs e)
+    {
+        var res =
+            selectedChars.Items.OfType<string>().Select(
+                item => _dataKeeper.valueInfos.First(info => info.Title == item)).ToArray();
             
-           // return res;
-        }
+        // return res;
     }
 }

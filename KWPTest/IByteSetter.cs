@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace KWPTest
+namespace KWPTest;
+
+public interface IByteSetter
 {
-    public interface IByteSetter
-    {
-        byte Value { get; set; }
-        event EventHandler OnValueChange;
-    }
+    byte Value { get; }
+    event EventHandler OnValueChange;
 }

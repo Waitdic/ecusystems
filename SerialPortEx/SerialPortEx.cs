@@ -1,8 +1,7 @@
 ﻿using System.IO.Ports;
 
-namespace SerialPortEx
+namespace SerialPortEx;
+
+public class SerialPortEx: SerialPort
 {
-    public class SerialPortEx: SerialPort
-    {
-    }
 }

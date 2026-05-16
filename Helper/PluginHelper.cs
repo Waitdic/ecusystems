@@ -1,17 +1,10 @@
 ﻿using System;
 
-namespace Helper
-{
-    [AttributeUsage(AttributeTargets.Assembly)]
-    public class PluginAttribute : Attribute
-    {
-        public PluginAttribute(string name, string description)
-        {
-            Name = name;
-            Description = description;
-        }
+namespace Helper;
 
-        public string Name { get; private set; }
-        public string Description { get; private set; }
-    }
+[AttributeUsage(AttributeTargets.Assembly)]
+public class PluginAttribute(string name, string description) : Attribute
+{
+    public string Name { get; private set; } = name;
+    public string Description { get; private set; } = description;
 }

@@ -7,13 +7,13 @@ namespace Crad.Windows.Forms.Actions;
 [Editor(typeof(Design.ActionCollectionEditor), typeof(UITypeEditor))]
 public class ActionCollection: Collection<Action>
 {
+    private ActionList parent;
+    public ActionList Parent => parent;
+    
     public ActionCollection(ActionList parent)
     {
         this.parent = parent;
     }
-
-    private ActionList parent;
-    public ActionList Parent => parent;
 
     protected override void ClearItems()
     {

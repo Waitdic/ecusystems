@@ -5,33 +5,35 @@ using System.Reflection;
 using Helper;
 using OpenOltTypes;
 
-namespace OpenOLT
+namespace OpenOLT;
+
+internal class PluginManager
 {
-    internal class PluginManager
+    public static void Load(string path, IApplicationHost applicationHost)
     {
-        public static void Load(string path, IApplicationHost applicationHost)
+        try
         {
-            try
+            foreach (var file in Directory.GetFiles(path, "*.dll"))
             {
-                foreach (var file in Directory.GetFiles(path, "*.dll"))
+                try
                 {
-                    try
+                    var assembly = Assembly.LoadFrom(file);
+                    var isPlugin = assembly.GetCustomAttributes(typeof (PluginAttribute), false).Any();
+                    if (!isPlugin) continue;
+                    foreach (var type in assembly.GetExportedTypes())
                     {
-                        var assembly = Assembly.LoadFrom(file);
-                        var isPlugin = assembly.GetCustomAttributes(typeof (PluginAttribute), false).Any();
-                        if (!isPlugin) continue;
-                        foreach (var type in assembly.GetExportedTypes())
-                        {
-                            Activator.CreateInstance(type, applicationHost);
-                        }
-                    }
-                    catch
-                    {
+                        Activator.CreateInstance(type, applicationHost);
                     }
                 }
+                catch
+                {
+                    // ignored
+                }
             }
-            catch (Exception e)
-            {}
+        }
+        catch (Exception e)
+        {
+            // ignored
         }
     }
 }

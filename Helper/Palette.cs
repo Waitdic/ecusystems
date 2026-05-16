@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace Helper
-{    
-    public class Palette
+namespace Helper;
+  
+public class Palette
     {
         /// <summary>
         /// ��������������� ������ ���: ��������-����
         /// </summary>
-        protected readonly SortedList<float, int> pairs = new SortedList<float, int>();
+        protected readonly SortedList<float, int> pairs = new();
 
         public bool LimitAbove { get; set; }
         public bool LimitBelow { get; set; }
@@ -18,26 +18,22 @@ namespace Helper
         /// <summary>
         /// �������� ������ �������
         /// </summary>
-        public void Clear()
-        {
-            pairs.Clear();
-        }
+        public void Clear() => pairs.Clear();
 
         /// <summary>
         /// ������� ������� ������� �� ������
         /// </summary>
         /// <param name="value">�������� �������� �������</param>
-        public void RemoveElement(float value)
-        {
-            pairs.Remove(value);
-        }
+        public void RemoveElement(float value) => pairs.Remove(value);
+        
         /// <summary>
         /// ������� ������� ������� �� �������
         /// </summary>
         /// <param name="index">�������� �������� �������</param>
         public void RemoveElement(int index)
         {
-            if ((index < 0) && (index >= pairs.Count)) return;
+            if (index < 0 && index >= pairs.Count) 
+                return;
 
             pairs.RemoveAt(index);
         }
@@ -47,20 +43,14 @@ namespace Helper
         /// </summary>
         /// <param name="value">�������� �������� �������</param>
         /// <param name="color">���� �������� �������</param>
-        public void AddElement(float value, int color)
-        {
-            pairs.Add(value, color);       
-        }
+        public void AddElement(float value, int color) => pairs.Add(value, color);
 
         //--------------------------------------
         /// <summary>
         /// �������� ���� �� �������
         /// </summary>
         /// <param name="index">������</param>
-        internal int GetColor(int index)
-        {
-            return pairs.Values[index];
-        }
+        internal int GetColor(int index) => pairs.Values[index];
 
         /// <summary>
         /// ���������� ���� �� �������
@@ -78,10 +68,7 @@ namespace Helper
         /// �������� �������� �� �������
         /// </summary>
         /// <param name="index">������</param>
-        public float GetValue(int index)
-        {
-            return pairs.Keys[index];           
-        }
+        public float GetValue(int index) => pairs.Keys[index];
 
         /// <summary>
         /// ���������� �������� �� �������
@@ -96,21 +83,15 @@ namespace Helper
         }
 
         //--------------------------------------
-        public int Count
-        {
-            get { return pairs.Count; }
-        }
-
+        public int Count => pairs.Count;
 
         /// <summary>
         /// �������� ���� �� ��������
         /// </summary>
         /// <param name="value">��������</param>
         /// <param name="defaultColor">���� �� ���������</param>
-        public int GetColorOnValue(float value, int defaultColor)
-        {
-            return InnerGetColorOnValue(value, defaultColor);
-        }
+        public int GetColorOnValue(float value, int defaultColor) 
+            => InnerGetColorOnValue(value, defaultColor);
 
         internal int InnerGetColorOnValue(float value, int defaultColor)
         {
@@ -176,4 +157,3 @@ namespace Helper
             }
         }
     }    
-}
